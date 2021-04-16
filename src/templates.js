@@ -1,6 +1,5 @@
 const Templates = {
   spinner: document.getElementById("spinner-template"),
-  intro: document.getElementById("intro-template"),
   question: document.getElementById("question-template"),
   result: document.getElementById("result-template"),
   error: document.getElementById("error-template")
@@ -15,9 +14,18 @@ class TemplatePresenter {
     this.app.appendChild(Templates.spinner.content.cloneNode(true));
   }
 
-  showQuestion() {
-    this.app.appendChild(Templates.spinner.content.cloneNode(true));
-    this.app.appendChild(Templates.intro.content.cloneNode(true));
+  showQuestion(quizTitle, quizDescription, question) {
+    const questionElement = Templates.question.content.cloneNode(true);
+
+    this.app.appendChild(questionElement);
+
+    const questionTitleElement = document.querySelector(".quiz-title");
+    questionTitleElement.textContent = quizTitle;
+
+    const questionDescriptionElement = document.querySelector(
+      ".quiz-description"
+    );
+    questionDescriptionElement.textContent = quizDescription;
   }
 
   showResult() {

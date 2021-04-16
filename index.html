@@ -13,27 +13,16 @@
   <div id="app"></div>
 
   <template id="question-template">
-    <form class="container">
+    <form id="answers-form" class="container">
       <h1 class="quiz-title"></h1>
       <p class="quiz-description"></p>
       <div class="image-container">
         <img class ="question-image" src="" title="">
       </div>
       <h2 class="answer-description"></h2>
-      <div class="radio-buttons">
-        <div class="answer-container" data-id="1">
-          <input type="radio" name="answer" id="1" value="1"><label for="1">Seattle</label>
-        </div>
-        <div class="answer-container" data-id="2">
-          <input type="radio" name="answer" id="2" value="2"><label for="2">New York</label>
-        </div>
-        <div class="answer-container" data-id="3">
-          <input type="radio" name="answer" id="3" value="3"><label for="3">Atlantic City</label>
-        </div>
-        <div class="answer-container" data-id="4">
-          <input type="radio" name="answer" id="4" value="4"><label for="4">Washington, D.C.</label>
-        </div>
-      </div><input type="submit" value="submit" disabled="">
+      <div class="answers-container">
+      </div>
+      <input type="submit" value="submit" disabled="">
     </form>
   </template>
 
@@ -53,14 +42,14 @@
     </div>
   </template>
 
-  <template id="radio-template">
+  <template id="radiobutton-template">
     <div class="answer-container">
       <input type="radio" name="answer" >
-      <label ></label>
+      <label></label>
     </div>
   </template>
 
-  <template id="check-template">
+  <template id="checkbox-template">
     <div class="answer-container">
       <input type="checkBox">
       <label></label>

@@ -104,8 +104,6 @@ class TemplatePresenter {
       ".answers-container"
     );
 
-    answersContainerElement.textContent = "";
-
     addAnswersToContainer(
       question.question_type,
       question.possible_answers,
@@ -113,6 +111,24 @@ class TemplatePresenter {
     );
 
     this.present(Templates.question.content.cloneNode(true));
+    debugger;
+    const submitButton = document.querySelector("input[type='submit']");
+
+    document.querySelectorAll("input").forEach(item =>
+      item.addEventListener("change", e => {
+        e.preventDefault();
+        e.stopPropagation();
+        submitButton.disabled = false;
+      })
+    );
+
+    document
+      .querySelector("form#answers-form")
+      .addEventListener("submit", e => {
+        e.preventDefault();
+        e.stopPropagation();
+        alert("submit");
+      });
   }
 
   showResult() {

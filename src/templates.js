@@ -30,7 +30,7 @@ class TemplatePresenter {
     this.present(Templates.spinner.content.cloneNode(true));
   }
 
-  showQuestion(quizTitle, quizDescription, question) {
+  showQuestion(quizTitle, quizDescription, question, onSubmit) {
     const createAnswer = (id, text, type) => {
       const answerContainerElement = Templates.answer.content.querySelector(
         ".answer-container"
@@ -77,6 +77,15 @@ class TemplatePresenter {
           // answersEl = this.htmlUtils.createLabel("Unknown question type");
           break;
       }
+    };
+
+    const serializeForm = form => {
+      var obj = {};
+      var formData = new FormData(form);
+      for (var key of formData.keys()) {
+        obj[key] = formData.get(key);
+      }
+      return obj;
     };
 
     const questionTitleElement = Templates.question.content.querySelector(
@@ -127,7 +136,7 @@ class TemplatePresenter {
       .addEventListener("submit", e => {
         e.preventDefault();
         e.stopPropagation();
-        alert("submit");
+        onSubmit(serializeForm(e.target));
       });
   }
 

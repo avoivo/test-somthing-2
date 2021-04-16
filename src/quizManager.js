@@ -11,7 +11,8 @@ class QuizManager {
         templatePresenter.showQuestion(
           data.title,
           data.description,
-          data.questions[0]
+          data.questions[0],
+          result => alert(JSON.stringify(result))
         );
       })
       .catch(error => {

@@ -1,4 +1,4 @@
-class TemplateDecorator {
+class Template {
   constructor(templateId) {
     this.templateId = templateId;
     this.clear();
@@ -53,30 +53,13 @@ class TemplateDecorator {
   }
 }
 
-class TemplatePresenter {
-  constructor(app) {
-    this.app = app;
-
-    this.spinnerTemplate = new TemplateDecorator("spinner-template");
-    this.resultTemplate = new TemplateDecorator("result-template");
-    this.questionTemplate = new TemplateDecorator("question-template");
-    this.errorTemplate = new TemplateDecorator("error-template");
-    this.answerTemplate = new TemplateDecorator("answer-template");
+class QustionTemplate {
+  constructor(templateId) {
+    this.template = new Template(templateId);
+    this.answerTemplate = new Template("answer-template");
   }
 
-  present(element) {
-    if (!!!element) {
-      return;
-    }
-    this.app.textContent = "";
-    this.app.appendChild(element);
-  }
-
-  showSpinner() {
-    this.present(this.spinnerTemplate.clone());
-  }
-
-  showQuestion(quizTitle, quizDescription, question, onSubmit) {
+  create(quizTitle, quizDescription, question) {
     const createAnswer = (id, text, type) => {
       this.answerTemplate.clear();
       this.answerTemplate.setContainerId(".answer-container", id);
@@ -113,6 +96,49 @@ class TemplatePresenter {
       }
     };
 
+    this.template.clear();
+    this.template.setText(".quiz-title", quizTitle);
+    this.template.setText(".quiz-description", quizDescription);
+    this.template.setImage(".question-image", question.img, question.title);
+    this.template.setText(".answer-description", question.title);
+
+    const answersContainerElement = this.template.getElement(
+      ".answers-container"
+    );
+
+    addAnswersToContainer(
+      question.question_type,
+      question.possible_answers,
+      answersContainerElement
+    );
+
+    return this.template.clone();
+  }
+}
+
+class TemplatePresenter {
+  constructor(app) {
+    this.app = app;
+
+    this.spinnerTemplate = new Template("spinner-template");
+    this.resultTemplate = new Template("result-template");
+    this.questionTemplate = new QustionTemplate("question-template");
+    this.errorTemplate = new Template("error-template");
+  }
+
+  present(element) {
+    if (!!!element) {
+      return;
+    }
+    this.app.textContent = "";
+    this.app.appendChild(element);
+  }
+
+  showSpinner() {
+    this.present(this.spinnerTemplate.clone());
+  }
+
+  showQuestion(quizTitle, quizDescription, question, onSubmit) {
     const serializeForm = form => {
       var obj = {};
       var formData = new FormData(form);
@@ -165,27 +191,9 @@ class TemplatePresenter {
       );
     };
 
-    this.questionTemplate.clear();
-    this.questionTemplate.setText(".quiz-title", quizTitle);
-    this.questionTemplate.setText(".quiz-description", quizDescription);
-    this.questionTemplate.setImage(
-      ".question-image",
-      question.img,
-      question.title
+    this.present(
+      this.questionTemplate.create(quizTitle, quizDescription, question)
     );
-    this.questionTemplate.setText(".answer-description", question.title);
-
-    const answersContainerElement = this.questionTemplate.getElement(
-      ".answers-container"
-    );
-
-    addAnswersToContainer(
-      question.question_type,
-      question.possible_answers,
-      answersContainerElement
-    );
-
-    this.present(this.questionTemplate.clone());
     const submitButton = document.querySelector("input[type='submit']");
     document.querySelectorAll("input").forEach(item =>
       item.addEventListener("change", e => {

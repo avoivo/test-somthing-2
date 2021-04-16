@@ -29,7 +29,6 @@ class TemplatePresenter {
     const errorContainer = Templates.error.content.cloneNode(true);
     this.app.appendChild(errorContainer);
     const errorTextEl = document.querySelector(".error-text");
-    const errorTextNode = document.createTextNode(error);
-    errorTextEl.appendChild(errorTextNode);
+    errorTextEl.textContent = error;
   }
 }

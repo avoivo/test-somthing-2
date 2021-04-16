@@ -5,34 +5,23 @@
 
   <link rel="stylesheet" type="text/css" href="assets/styles/site.css" />
   <link rel="stylesheet" type="text/css" href="assets/styles/spinner.css" />
+
+  <link rel="import" href="templates/result.html">
 </head>
 
 <body>
   <div id="app"></div>
 
-  <template id="spinner-template">
-    <div class="spinner">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-  </template>
-
-  <template id="intro-template">
-    <div class="container">
-      <h1>Classic Board Games Quiz</h1>
-      <p class="description">Are you a board game boss? Get ready to roll the dice and prove your prowess with this fun
-        quiz on classic board games!</p>
-
-    </div>
-  </template>
-
   <template id="question-template">
+    <div class="container">
+      <h1 class="quiz-title"></h1>
+      <p class="quiz-description"></p>
+    </div>
     <form class="container">
-      <div class="image-container"><img src="http://proto.io/en/jobs/candidate-exercise/imgs/1.png" title="The original version of Monopoly was based on the streets of which American city?">
+      <div class="image-container">
+        <img class ="question-image" src="" title="">
       </div>
-      <h2>The original version of Monopoly was based on the streets of which American city?</h2>
+      <h2 class="answer-description"></h2>
       <div class="radio-buttons">
         <div class="answer-container" data-id="1">
           <input type="radio" name="answer" id="1" value="1"><label for="1">Seattle</label>
@@ -50,21 +39,25 @@
     </form>
   </template>
 
-  <template id="result-tampate">
-    <div class="container">
-      <div class="image-container"><img src="http://proto.io/en/jobs/candidate-exercise/imgs/result-2.png" title="An average attempt">
-      </div>
-      <p>Final score: 45</p>
-      <p>Result: An average attempt</p>
-      <p>Your Board games skills need some polishing up. We suggest you get to practicing!</p>
-    </div>
-  </template>
 
   <template id="error-template">
     <div class="error">
       <p class="error-text"></p>
     </div>
   </template>
+
+  <template id="spinner-template">
+    <div class="spinner">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </template>
+
+
+
+
 
   <script src="config.js"></script>
   <script src="src/templates.js"></script>

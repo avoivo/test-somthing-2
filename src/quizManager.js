@@ -9,7 +9,30 @@ class QuizManager {
   }
 
   start() {
-    const showResult = () => {};
+    const showResult = () => {
+      templatePresenter.showSpinner();
+      fetch(config.resultUrl)
+        .then(response => response.json())
+        .then(data => {
+          console.log("Data Loaded");
+
+          const finalScorePercentage =
+            (this.totalScore / this.highestPossibleScore) * 100;
+
+          const result = data.results.filter(
+            item =>
+              item.minpoints <= finalScorePercentage &&
+              item.maxpoints >= finalScorePercentage
+          )[0];
+
+          templatePresenter.showResult(result, finalScorePercentage);
+        })
+        .catch(error => {
+          console.error(error);
+          templatePresenter.showError(error);
+        });
+    };
+
     const showQuestion = question => {
       if (this.questionIndex >= this.questionData.questions.length) {
         showResult();

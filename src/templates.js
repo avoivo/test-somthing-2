@@ -203,9 +203,30 @@ class TemplatePresenter {
       });
   }
 
-  showResult() {
-    // this.present(Templates.spinner.content.cloneNode(true));
-    // this.present(Templates.intro.content.cloneNode(true));
+  showResult(resultData, finalScore) {
+    const resultScoreElement = Templates.result.content.querySelector(
+      ".result-score"
+    );
+
+    resultScoreElement.textContent = `Final score: ${finalScore}`;
+
+    const resultTitleElement = Templates.result.content.querySelector(
+      ".result-title"
+    );
+    resultTitleElement.textContent = `Result: ${resultData.title}`;
+
+    const resultDescriptionElement = Templates.result.content.querySelector(
+      ".result-description"
+    );
+    resultDescriptionElement.textContent = resultData.message;
+
+    const resultImageElement = Templates.result.content.querySelector(
+      ".result-image"
+    );
+    resultImageElement.src = resultData.img;
+    resultImageElement.title = resultData.title;
+
+    this.present(Templates.result.content.cloneNode(true));
   }
 
   showError(error) {

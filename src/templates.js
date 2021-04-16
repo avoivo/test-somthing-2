@@ -9,21 +9,14 @@ const Templates = {
 class TemplatePresenter {
   constructor(app) {
     this.app = app;
-    this.lastDisplayed;
   }
 
   present(element) {
     if (!!!element) {
       return;
     }
-
-    if (this.lastDisplayed === undefined) {
-      this.app.appendChild(element);
-    } else {
-      this.app.replaceChild(element, this.lastDisplayed);
-    }
-
-    this.lastDisplayed = element;
+    this.app.textContent = "";
+    this.app.appendChild(element);
   }
 
   showSpinner() {
@@ -67,7 +60,7 @@ class TemplatePresenter {
           container.appendChild(createAnswer("false", "False", "radio"));
           break;
         case "multiplechoice-multiple":
-          for (let i = 1; i < answers.length; i++) {
+          for (let i = 0; i < answers.length; i++) {
             container.appendChild(
               createAnswer(answers[i].a_id, answers[i].caption, "checkbox")
             );
@@ -168,7 +161,7 @@ class TemplatePresenter {
     );
 
     this.present(Templates.question.content.cloneNode(true));
-    debugger;
+
     const submitButton = document.querySelector("input[type='submit']");
 
     document.querySelectorAll("input").forEach(item =>

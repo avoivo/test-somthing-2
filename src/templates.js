@@ -53,7 +53,7 @@ class Template {
   }
 }
 
-class QustionTemplate {
+class QuestionTemplate {
   constructor(templateId) {
     this.template = new Template(templateId);
     this.answerTemplate = new Template("answer-template");
@@ -122,7 +122,7 @@ class TemplatePresenter {
 
     this.spinnerTemplate = new Template("spinner-template");
     this.resultTemplate = new Template("result-template");
-    this.questionTemplate = new QustionTemplate("question-template");
+    this.questionTemplate = new QuestionTemplate("question-template");
     this.errorTemplate = new Template("error-template");
   }
 

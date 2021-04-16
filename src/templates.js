@@ -5,7 +5,7 @@ class Template {
   }
 
   clear() {
-    this.template = document.getElementById(this.templateId);
+    this.template = document.getElementById(this.templateId).cloneNode(true);
   }
 
   setText(selector, text) {
@@ -195,11 +195,32 @@ class TemplatePresenter {
       this.questionTemplate.create(quizTitle, quizDescription, question)
     );
     const submitButton = document.querySelector("input[type='submit']");
-    document.querySelectorAll("input").forEach(item =>
+
+    const inputElements = document.querySelectorAll("input");
+    let iSubmiting = false;
+
+    inputElements.forEach(item =>
       item.addEventListener("change", e => {
         e.preventDefault();
         e.stopPropagation();
-        submitButton.disabled = false;
+
+        if (iSubmiting) {
+          return;
+        }
+
+        if (question.question_type === "multiplechoice-multiple") {
+          submitButton.disabled = true;
+          const checkedCount = [].filter.call(inputElements, function(el) {
+            return el.checked;
+          }).length;
+
+          if (checkedCount > 0) {
+            submitButton.disabled = false;
+            return;
+          }
+        } else {
+          submitButton.disabled = false;
+        }
       })
     );
     const validationResultElement = document.querySelector(
@@ -210,6 +231,7 @@ class TemplatePresenter {
       .addEventListener("submit", e => {
         e.preventDefault();
         e.stopPropagation();
+        iSubmiting = true;
         submitButton.disabled = true;
         const result = calculateScore(
           serializeForm(e.target),

@@ -1,8 +1,6 @@
 const appEl = document.getElementById("app");
 const templatePresenter = new TemplatePresenter(appEl);
 
-templatePresenter.showSpinner();
-
 fetch(config.quizUrl)
   .then(response => response.json())
   .then(data => {
@@ -16,5 +14,7 @@ fetch(config.quizUrl)
   })
   .catch(error => {
     console.error(error);
+    templatePresenter.showError(error);
+
     // this.navigator.navigate(this.htmlUtils.createError(error));
   });

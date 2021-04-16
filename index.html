@@ -19,13 +19,50 @@
     </div>
   </template>
 
-  <template id="intro-template"> </template>
+  <template id="intro-template">
+    <div class="container">
+      <h1>Classic Board Games Quiz</h1>
+      <p class="description">Are you a board game boss? Get ready to roll the dice and prove your prowess with this fun
+        quiz on classic board games!</p>
 
-  <template id="question-template"> </template>
+    </div>
+  </template>
+
+  <template id="question-template">
+    <form class="container">
+      <div class="image-container"><img src="http://proto.io/en/jobs/candidate-exercise/imgs/1.png" title="The original version of Monopoly was based on the streets of which American city?">
+      </div>
+      <h2>The original version of Monopoly was based on the streets of which American city?</h2>
+      <div class="radio-buttons">
+        <div class="answer-container" data-id="1">
+          <input type="radio" name="answer" id="1" value="1"><label for="1">Seattle</label>
+        </div>
+        <div class="answer-container" data-id="2">
+          <input type="radio" name="answer" id="2" value="2"><label for="2">New York</label>
+        </div>
+        <div class="answer-container" data-id="3">
+          <input type="radio" name="answer" id="3" value="3"><label for="3">Atlantic City</label>
+        </div>
+        <div class="answer-container" data-id="4">
+          <input type="radio" name="answer" id="4" value="4"><label for="4">Washington, D.C.</label>
+        </div>
+      </div><input type="submit" value="submit" disabled="">
+    </form>
+  </template>
+
+  <template id="result-tampate">
+    <div class="container">
+      <div class="image-container"><img src="http://proto.io/en/jobs/candidate-exercise/imgs/result-2.png" title="An average attempt">
+      </div>
+      <p>Final score: 45</p>
+      <p>Result: An average attempt</p>
+      <p>Your Board games skills need some polishing up. We suggest you get to practicing!</p>
+    </div>
+  </template>
 
   <template id="error-template">
     <div class="error">
-      <p></p>
+      <p class="error-text"></p>
     </div>
   </template>
 

@@ -3,8 +3,7 @@ const Templates = {
   question: document.getElementById("question-template"),
   result: document.getElementById("result-template"),
   error: document.getElementById("error-template"),
-  radioButton: document.getElementById("radiobutton-template"),
-  checkBox: document.getElementById("checkbox-template")
+  answer: document.getElementById("answer-template")
 };
 
 class TemplatePresenter {
@@ -32,23 +31,52 @@ class TemplatePresenter {
   }
 
   showQuestion(quizTitle, quizDescription, question) {
-    const createCheckBox = (id, text) => {
-      const answerContainerElement = Templates.checkBox.content.querySelector(
+    const createAnswer = (id, text, type) => {
+      const answerContainerElement = Templates.answer.content.querySelector(
         ".answer-container"
       );
       answerContainerElement.dataset.id = id;
 
-      const inputElement = Templates.checkBox.content.querySelector("input");
+      const inputElement = Templates.answer.content.querySelector("input");
       inputElement.id = id;
-      inputElement.name = id;
+      inputElement.type = type;
+      inputElement.name = type === "radio" ? "answer" : id;
       inputElement.value = id;
 
-      const labelElement = Templates.checkBox.content.querySelector("label");
+      const labelElement = Templates.answer.content.querySelector("label");
 
       labelElement.htmlFor = id;
       labelElement.textContent = text;
 
-      return Templates.checkBox.content.cloneNode(true);
+      return Templates.answer.content.cloneNode(true);
+    };
+
+    const addAnswersToContainer = (questionType, answers, container) => {
+      container.textContent = "";
+      switch (questionType) {
+        case "multiplechoice-single":
+          for (let i = 0; i < answers.length; i++) {
+            container.appendChild(
+              createAnswer(answers[i].a_id, answers[i].caption, "radio")
+            );
+          }
+
+          break;
+        case "truefalse":
+          container.appendChild(createAnswer("true", "True", "radio"));
+          container.appendChild(createAnswer("false", "False", "radio"));
+          break;
+        case "multiplechoice-multiple":
+          for (let i = 1; i < answers.length; i++) {
+            container.appendChild(
+              createAnswer(answers[i].a_id, answers[i].caption, "checkbox")
+            );
+          }
+          break;
+        default:
+          // answersEl = this.htmlUtils.createLabel("Unknown question type");
+          break;
+      }
     };
 
     const questionTitleElement = Templates.question.content.querySelector(
@@ -78,14 +106,11 @@ class TemplatePresenter {
 
     answersContainerElement.textContent = "";
 
-    for (let i = 1; i < question.possible_answers.length; i++) {
-      answersContainerElement.appendChild(
-        createCheckBox(
-          question.possible_answers[i].a_id,
-          question.possible_answers[i].caption
-        )
-      );
-    }
+    addAnswersToContainer(
+      question.question_type,
+      question.possible_answers,
+      answersContainerElement
+    );
 
     this.present(Templates.question.content.cloneNode(true));
   }

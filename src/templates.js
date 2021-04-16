@@ -33,33 +33,66 @@ class TemplatePresenter {
 
   showQuestion(quizTitle, quizDescription, question) {
     const createCheckBox = (id, text) => {
-      const checkBoxElement = Templates.checkBox.content.cloneNode(true);
-      checkBoxElement.dataset.id = id;
-      const inputElement = checkBoxElement.querySelector("input");
+      const answerContainerElement = Templates.checkBox.content.querySelector(
+        ".answer-container"
+      );
+      answerContainerElement.dataset.id = id;
+
+      const inputElement = Templates.checkBox.content.querySelector("input");
       inputElement.id = id;
       inputElement.name = id;
-      return checkBoxElement;
-    };
-    debugger;
-    const questionElement = Templates.question.content.cloneNode(true);
+      inputElement.value = id;
 
-    const questionTitleElement = document.querySelector(".quiz-title");
+      const labelElement = Templates.checkBox.content.querySelector("label");
+
+      labelElement.htmlFor = id;
+      labelElement.textContent = text;
+
+      return Templates.checkBox.content.cloneNode(true);
+    };
+
+    const questionTitleElement = Templates.question.content.querySelector(
+      ".quiz-title"
+    );
     questionTitleElement.textContent = quizTitle;
 
-    const questionDescriptionElement = document.querySelector(
+    const questionDescriptionElement = Templates.question.content.querySelector(
       ".quiz-description"
     );
     questionDescriptionElement.textContent = quizDescription;
 
-    const answersContainerElement = questionElement.querySelector(
+    const questionImageElement = Templates.question.content.querySelector(
+      ".question-image"
+    );
+    questionImageElement.src = question.img;
+    questionImageElement.title = question.title;
+
+    const answerDescriptionElement = Templates.question.content.querySelector(
+      ".answer-description"
+    );
+    answerDescriptionElement.textContent = question.title;
+
+    const answersContainerElement = Templates.question.content.querySelector(
       ".answers-container"
     );
-    this.present(questionElement);
+
+    answersContainerElement.textContent = "";
+
+    for (let i = 1; i < question.possible_answers.length; i++) {
+      answersContainerElement.appendChild(
+        createCheckBox(
+          question.possible_answers[i].a_id,
+          question.possible_answers[i].caption
+        )
+      );
+    }
+
+    this.present(Templates.question.content.cloneNode(true));
   }
 
   showResult() {
-    this.present(Templates.spinner.content.cloneNode(true));
-    this.present(Templates.intro.content.cloneNode(true));
+    // this.present(Templates.spinner.content.cloneNode(true));
+    // this.present(Templates.intro.content.cloneNode(true));
   }
 
   showError(error) {

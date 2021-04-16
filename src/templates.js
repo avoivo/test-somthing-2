@@ -15,6 +15,8 @@ class TemplatePresenter {
   }
 
   showQuestion(quizTitle, quizDescription, question) {
+
+
     const questionElement = Templates.question.content.cloneNode(true);
 
     this.app.appendChild(questionElement);

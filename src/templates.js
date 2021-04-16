@@ -1,14 +1,67 @@
-const Templates = {
-  spinner: document.getElementById("spinner-template"),
-  question: document.getElementById("question-template"),
-  result: document.getElementById("result-template"),
-  error: document.getElementById("error-template"),
-  answer: document.getElementById("answer-template")
-};
+class TemplateDecorator {
+  constructor(templateId) {
+    this.templateId = templateId;
+    this.clear();
+  }
+
+  clear() {
+    this.template = document.getElementById(this.templateId);
+  }
+
+  setText(selector, text) {
+    const el = this.template.content.querySelector(selector);
+    el && (el.textContent = text);
+  }
+
+  setImage(selector, src, title) {
+    const el = this.template.content.querySelector(selector);
+    if (el) {
+      el.src = src;
+      el.title = title;
+    }
+  }
+
+  setContainerId(selector, id) {
+    const el = this.template.content.querySelector(selector);
+    el && (el.dataset.id = id);
+  }
+
+  setInput(selector, id, type) {
+    const inputElement = this.template.content.querySelector(selector);
+    if (inputElement) {
+      inputElement.id = id;
+      inputElement.type = type;
+      inputElement.name = type === "radio" ? "answer" : id;
+      inputElement.value = id;
+    }
+  }
+
+  setLabel(selector, id, text) {
+    const labelElement = this.template.content.querySelector(selector);
+    if (labelElement) {
+      labelElement.htmlFor = id;
+      labelElement.textContent = text;
+    }
+  }
+
+  getElement(selector) {
+    return this.template.content.querySelector(selector);
+  }
+
+  clone() {
+    return this.template.content.cloneNode(true);
+  }
+}
 
 class TemplatePresenter {
   constructor(app) {
     this.app = app;
+
+    this.spinnerTemplate = new TemplateDecorator("spinner-template");
+    this.resultTemplate = new TemplateDecorator("result-template");
+    this.questionTemplate = new TemplateDecorator("question-template");
+    this.errorTemplate = new TemplateDecorator("error-template");
+    this.answerTemplate = new TemplateDecorator("answer-template");
   }
 
   present(element) {
@@ -20,28 +73,17 @@ class TemplatePresenter {
   }
 
   showSpinner() {
-    this.present(Templates.spinner.content.cloneNode(true));
+    this.present(this.spinnerTemplate.clone());
   }
 
   showQuestion(quizTitle, quizDescription, question, onSubmit) {
     const createAnswer = (id, text, type) => {
-      const answerContainerElement = Templates.answer.content.querySelector(
-        ".answer-container"
-      );
-      answerContainerElement.dataset.id = id;
-
-      const inputElement = Templates.answer.content.querySelector("input");
-      inputElement.id = id;
-      inputElement.type = type;
-      inputElement.name = type === "radio" ? "answer" : id;
-      inputElement.value = id;
-
-      const labelElement = Templates.answer.content.querySelector("label");
-
-      labelElement.htmlFor = id;
-      labelElement.textContent = text;
-
-      return Templates.answer.content.cloneNode(true);
+      this.answerTemplate.clear();
+      this.answerTemplate.setContainerId(".answer-container", id);
+      this.answerTemplate.setInput("input", id, type);
+      this.answerTemplate.setLabel("label", id, text);
+      const answerEl = this.answerTemplate.clone();
+      return answerEl;
     };
 
     const addAnswersToContainer = (questionType, answers, container) => {
@@ -53,7 +95,6 @@ class TemplatePresenter {
               createAnswer(answers[i].a_id, answers[i].caption, "radio")
             );
           }
-
           break;
         case "truefalse":
           container.appendChild(createAnswer("true", "True", "radio"));
@@ -100,20 +141,16 @@ class TemplatePresenter {
         }
       } else {
         //checkboxes
-
         const selectedAswers = Object.keys(submitedData).map(k => Number(k));
-
         var isSame =
           correctAnswer.length == selectedAswers.length &&
           correctAnswer.every(function(element, index) {
             return element === selectedAswers[index];
           });
-
         if (isSame) {
           score = points;
         }
       }
-
       return score;
     };
 
@@ -121,7 +158,6 @@ class TemplatePresenter {
       correctAnswer = Array.isArray(correctAnswer)
         ? correctAnswer
         : [correctAnswer];
-
       correctAnswer.forEach(item =>
         document
           .querySelector(`.answer-container[data-id='${item}']`)
@@ -129,28 +165,17 @@ class TemplatePresenter {
       );
     };
 
-    const questionTitleElement = Templates.question.content.querySelector(
-      ".quiz-title"
+    this.questionTemplate.clear();
+    this.questionTemplate.setText(".quiz-title", quizTitle);
+    this.questionTemplate.setText(".quiz-description", quizDescription);
+    this.questionTemplate.setImage(
+      ".question-image",
+      question.img,
+      question.title
     );
-    questionTitleElement.textContent = quizTitle;
+    this.questionTemplate.setText(".answer-description", question.title);
 
-    const questionDescriptionElement = Templates.question.content.querySelector(
-      ".quiz-description"
-    );
-    questionDescriptionElement.textContent = quizDescription;
-
-    const questionImageElement = Templates.question.content.querySelector(
-      ".question-image"
-    );
-    questionImageElement.src = question.img;
-    questionImageElement.title = question.title;
-
-    const answerDescriptionElement = Templates.question.content.querySelector(
-      ".answer-description"
-    );
-    answerDescriptionElement.textContent = question.title;
-
-    const answersContainerElement = Templates.question.content.querySelector(
+    const answersContainerElement = this.questionTemplate.getElement(
       ".answers-container"
     );
 
@@ -160,10 +185,8 @@ class TemplatePresenter {
       answersContainerElement
     );
 
-    this.present(Templates.question.content.cloneNode(true));
-
+    this.present(this.questionTemplate.clone());
     const submitButton = document.querySelector("input[type='submit']");
-
     document.querySelectorAll("input").forEach(item =>
       item.addEventListener("change", e => {
         e.preventDefault();
@@ -171,25 +194,21 @@ class TemplatePresenter {
         submitButton.disabled = false;
       })
     );
-
     const validationResultElement = document.querySelector(
       ".validation-result"
     );
-
     document
       .querySelector("form#answers-form")
       .addEventListener("submit", e => {
         e.preventDefault();
         e.stopPropagation();
         submitButton.disabled = true;
-
         const result = calculateScore(
           serializeForm(e.target),
           question.question_type,
           question.correct_answer,
           question.points
         );
-
         if (result === 0) {
           validationResultElement.textContent = "Your answer is incorrect.";
           validationResultElement.classList.add("fail");
@@ -198,39 +217,27 @@ class TemplatePresenter {
           validationResultElement.textContent = "Your answer is correct!";
           validationResultElement.classList.add("success");
         }
-
         setTimeout(() => onSubmit(result), 3000);
       });
   }
 
   showResult(resultData, finalScore) {
-    const resultScoreElement = Templates.result.content.querySelector(
-      ".result-score"
+    this.resultTemplate.clear();
+    this.resultTemplate.setText(".result-score", `Final score: ${finalScore}`);
+    this.resultTemplate.setText(".result-title", `Result: ${resultData.title}`);
+    this.resultTemplate.setText(".result-description", resultData.message);
+    this.resultTemplate.setImage(
+      ".result-image",
+      resultData.img,
+      resultData.title
     );
 
-    resultScoreElement.textContent = `Final score: ${finalScore}`;
-
-    const resultTitleElement = Templates.result.content.querySelector(
-      ".result-title"
-    );
-    resultTitleElement.textContent = `Result: ${resultData.title}`;
-
-    const resultDescriptionElement = Templates.result.content.querySelector(
-      ".result-description"
-    );
-    resultDescriptionElement.textContent = resultData.message;
-
-    const resultImageElement = Templates.result.content.querySelector(
-      ".result-image"
-    );
-    resultImageElement.src = resultData.img;
-    resultImageElement.title = resultData.title;
-
-    this.present(Templates.result.content.cloneNode(true));
+    this.present(this.resultTemplate.clone());
   }
 
   showError(error) {
-    Templates.error.content.querySelector(".error-text").textContent = error;
-    this.present(Templates.error.content.cloneNode(true));
+    this.errorTemplate.clear();
+    this.errorTemplate.setText(".error-text", error);
+    this.present(this.errorTemplate.clone());
   }
 }

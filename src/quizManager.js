@@ -36,6 +36,7 @@ class QuizManager {
     const showQuestion = question => {
       if (this.questionIndex >= this.questionData.questions.length) {
         showResult();
+        return;
       }
       templatePresenter.showQuestion(
         this.questionData.title,

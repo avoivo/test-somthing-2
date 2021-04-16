@@ -17,8 +17,9 @@ img {
   box-shadow: 2px 2px 4px #000000;
 }
 
-input,
-button {
+.answer-container input,
+.answer-container label,
+input[type="submit"] {
   cursor: pointer;
 }
 

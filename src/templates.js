@@ -74,7 +74,7 @@ class TemplatePresenter {
           }
           break;
         default:
-          // answersEl = this.htmlUtils.createLabel("Unknown question type");
+          container.textContent = "Unknown question type";
           break;
       }
     };
@@ -86,6 +86,54 @@ class TemplatePresenter {
         obj[key] = formData.get(key);
       }
       return obj;
+    };
+
+    const calculateScore = (
+      submitedData,
+      questionType,
+      correctAnswer,
+      points
+    ) => {
+      let score = 0;
+      if (questionType === "multiplechoice-single") {
+        //radio
+        if (correctAnswer === Number(submitedData["answer"])) {
+          score = points;
+        }
+      } else if (questionType === "truefalse") {
+        //true/false
+        if (submitedData["answer"].includes(correctAnswer)) {
+          score = points;
+        }
+      } else {
+        //checkboxes
+
+        const selectedAswers = Object.keys(submitedData).map(k => Number(k));
+
+        var isSame =
+          correctAnswer.length == selectedAswers.length &&
+          correctAnswer.every(function(element, index) {
+            return element === selectedAswers[index];
+          });
+
+        if (isSame) {
+          score = points;
+        }
+      }
+
+      return score;
+    };
+
+    const highlightCorrectAnswer = correctAnswer => {
+      correctAnswer = Array.isArray(correctAnswer)
+        ? correctAnswer
+        : [correctAnswer];
+
+      correctAnswer.forEach(item =>
+        document
+          .querySelector(`.answer-container[data-id='${item}']`)
+          .classList.add("highlight")
+      );
     };
 
     const questionTitleElement = Templates.question.content.querySelector(
@@ -131,12 +179,34 @@ class TemplatePresenter {
       })
     );
 
+    const validationResultElement = document.querySelector(
+      ".validation-result"
+    );
+
     document
       .querySelector("form#answers-form")
       .addEventListener("submit", e => {
         e.preventDefault();
         e.stopPropagation();
-        onSubmit(serializeForm(e.target));
+        submitButton.disabled = true;
+
+        const result = calculateScore(
+          serializeForm(e.target),
+          question.question_type,
+          question.correct_answer,
+          question.points
+        );
+
+        if (result === 0) {
+          validationResultElement.textContent = "Your answer is incorrect.";
+          validationResultElement.classList.add("fail");
+          highlightCorrectAnswer(question.correct_answer);
+        } else {
+          validationResultElement.textContent = "Your answer is correct!";
+          validationResultElement.classList.add("success");
+        }
+
+        setTimeout(() => onSubmit(result), 3000);
       });
   }
 

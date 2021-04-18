@@ -120,6 +120,7 @@ class ResultTemplate {
   constructor() {
     this.template = new Template("result-template");
   }
+
   create(finalScore, title, message, imgSrc, imgTitle) {
     this.template.clear();
     this.template.setText(".result-score", `Final score: ${finalScore}%`);
@@ -144,8 +145,8 @@ class ErrorTemplate {
     this.template = new Template("error-template");
   }
   create(error) {
-    this.errorTemplate.clear();
-    this.errorTemplate.setText(".error-text", error);
+    this.template.clear();
+    this.template.setText(".error-text", error);
     return this.template.clone();
   }
 }
@@ -293,7 +294,7 @@ class TemplatePresenter {
         resultData.message,
         resultData.img,
         resultData.title
-      )()
+      )
     );
   }
 

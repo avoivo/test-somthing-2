@@ -57,7 +57,13 @@ input[type="submit"]:disabled {
   cursor: default;
 }
 
+.answer-container {
+  padding: 3px;
+}
+
 .answer-container.highlight {
+  padding: 0px;
+  border: 3px;
   border-color: green;
   border-style: solid;
 }

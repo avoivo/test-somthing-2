@@ -253,7 +253,7 @@ class TemplatePresenter {
 
   showResult(resultData, finalScore) {
     this.resultTemplate.clear();
-    this.resultTemplate.setText(".result-score", `Final score: ${finalScore}`);
+    this.resultTemplate.setText(".result-score", `Final score: ${finalScore}%`);
     this.resultTemplate.setText(".result-title", `Result: ${resultData.title}`);
     this.resultTemplate.setText(".result-description", resultData.message);
     this.resultTemplate.setImage(

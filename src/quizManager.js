@@ -15,9 +15,14 @@ class QuizManager {
         .then(response => response.json())
         .then(data => {
           console.log("Data Loaded");
+          this.highestPossibleScore = this.highestPossibleScore ?? 0;
 
           const finalScorePercentage =
-            (this.totalScore / this.highestPossibleScore) * 100;
+            this.highestPossibleScore === 0
+              ? 0
+              : ((this.totalScore / this.highestPossibleScore) * 100).toFixed(
+                  0
+                );
 
           const result = data.results.filter(
             item =>
@@ -49,16 +54,24 @@ class QuizManager {
       );
     };
 
+    this.templatePresenter.showSpinner();
     fetch(config.quizUrl)
       .then(response => response.json())
       .then(data => {
         console.log("Data Loaded");
-        this.questionData = data;
-        this.highestPossibleScore = data.questions.reduce(
+        this.questionData = data || {};
+        this.questionData.questions = this.questionData.questions || [];
+
+        this.highestPossibleScore = this.questionData.questions.reduce(
           (total, item) => total + item.points,
           0
         );
-        showQuestion(this.questionData.questions[0]);
+
+        if (this.questionData.questions.length === 0) {
+          this.templatePresenter.showError("No existing quiz questions");
+        } else {
+          showQuestion(this.questionData.questions[0]);
+        }
       })
       .catch(error => {
         console.error(error);

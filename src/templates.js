@@ -55,7 +55,7 @@ class Template {
 
 class QuestionTemplate {
   constructor(templateId) {
-    this.template = new Template(templateId);
+    this.template = new Template("question-template");
     this.answerTemplate = new Template("answer-template");
   }
 
@@ -116,14 +116,48 @@ class QuestionTemplate {
   }
 }
 
+class ResultTemplate {
+  constructor() {
+    this.template = new Template("result-template");
+  }
+  create(finalScore, title, message, imgSrc, imgTitle) {
+    this.template.clear();
+    this.template.setText(".result-score", `Final score: ${finalScore}%`);
+    this.template.setText(".result-title", `Result: ${title}`);
+    this.template.setText(".result-description", message);
+    this.template.setImage(".result-image", imgSrc, imgTitle);
+    return this.template.clone();
+  }
+}
+
+class SpinnerTemplate {
+  constructor() {
+    this.template = new Template("spinner-template");
+  }
+  create() {
+    return this.template.clone();
+  }
+}
+
+class ErrorTemplate {
+  constructor() {
+    this.template = new Template("error-template");
+  }
+  create(error) {
+    this.errorTemplate.clear();
+    this.errorTemplate.setText(".error-text", error);
+    return this.template.clone();
+  }
+}
+
 class TemplatePresenter {
   constructor(app) {
     this.app = app;
 
-    this.spinnerTemplate = new Template("spinner-template");
-    this.resultTemplate = new Template("result-template");
-    this.questionTemplate = new QuestionTemplate("question-template");
-    this.errorTemplate = new Template("error-template");
+    this.spinnerTemplate = new SpinnerTemplate();
+    this.resultTemplate = new ResultTemplate();
+    this.questionTemplate = new QuestionTemplate();
+    this.errorTemplate = new ErrorTemplate();
   }
 
   present(element) {
@@ -135,7 +169,7 @@ class TemplatePresenter {
   }
 
   showSpinner() {
-    this.present(this.spinnerTemplate.clone());
+    this.present(this.spinnerTemplate.create());
   }
 
   showQuestion(quizTitle, quizDescription, question, onSubmit) {
@@ -252,22 +286,18 @@ class TemplatePresenter {
   }
 
   showResult(resultData, finalScore) {
-    this.resultTemplate.clear();
-    this.resultTemplate.setText(".result-score", `Final score: ${finalScore}%`);
-    this.resultTemplate.setText(".result-title", `Result: ${resultData.title}`);
-    this.resultTemplate.setText(".result-description", resultData.message);
-    this.resultTemplate.setImage(
-      ".result-image",
-      resultData.img,
-      resultData.title
+    this.present(
+      this.resultTemplate.create(
+        finalScore,
+        resultData.title,
+        resultData.message,
+        resultData.img,
+        resultData.title
+      )()
     );
-
-    this.present(this.resultTemplate.clone());
   }
 
   showError(error) {
-    this.errorTemplate.clear();
-    this.errorTemplate.setText(".error-text", error);
-    this.present(this.errorTemplate.clone());
+    this.present(this.errorTemplate.create(error));
   }
 }
